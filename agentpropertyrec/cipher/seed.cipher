@@ -1,0 +1,56 @@
+
+  // Agents
+                    CREATE
+                        (jill:Agent {
+                            name: 'Jill',
+                            sex: 'Female',
+                            phone_number: '081234567001'
+                        }),
+                        (leon:Agent {
+                            name: 'Leon',
+                            sex: 'Male',
+                            phone_number: '081234567002'
+                        }),
+                        (billy:Agent {
+                            name: 'Billy',
+                            sex: 'Male',
+                            phone_number: '081234567003'
+                        })
+
+  // Properties
+            CREATE
+                (p1:Property {
+                    title: 'Modern House in Palembang'
+                }),
+                (p2:Property {
+                    title: 'Luxury Apartment in Palembang'
+                }),
+                (p3:Property {
+                    title: 'Family House in Lahat'
+                })
+
+/// Property Owners
+            CREATE
+                (david:PropertyOwner {
+                    name: 'David'
+                }),
+                (eve:PropertyOwner {
+                    name: 'Eve'
+                })
+	
+// Relationships 
+
+CREATE
+    (jill)-[:SELL]->(p1),
+    (leon)-[:SELL]->(p2),
+    (billy)-[:SELL]->(p3),
+
+    (p1)-[:CO_LIST_WITH]->(leon),
+    (p2)-[:CO_LIST_WITH]->(billy), 
+    (p1)-[:CO_LIST_WITH]->(billy),
+    (p2)-[:CO_LIST_WITH]->(jill),
+    (p3)-[:CO_LIST_WITH]->(jill);
+
+    (david)-[:OWN]->(p1),
+    (eve)-[:OWN]->(p2),
+    (eve)-[:OWN]->(p3)	

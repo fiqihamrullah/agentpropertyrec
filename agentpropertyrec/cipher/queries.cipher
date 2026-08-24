@@ -1,0 +1,29 @@
+// Find primary agents which an agent has previously collaborated with
+MATCH (coAgent:Agent {name: $name})
+      <-[:CO_LIST_WITH]-
+      (p:Property)
+      <-[:SELL]-
+      (mainAgent:Agent)
+WHERE mainAgent <> coAgent
+RETURN DISTINCT mainAgent.name AS collaborator
+
+//Find recommended agents and their network based on a search for owner names whose properties have been sold.
+
+MATCH (owner:PropertyOwner {name: $name})
+      -[:OWN]->(property:Property)
+      <-[:SELL]-
+      (agent:Agent)
+
+MATCH path =
+      (agent)
+      <-[:CO_LIST_WITH]-
+      (:Property)
+      <-[:SELL]-
+      (networkAgent:Agent)
+
+RETURN DISTINCT
+    agent.name AS sellingAgent,
+    networkAgent.name AS recommendedAgent,
+    length(path) AS hops
+ORDER BY hops
+
