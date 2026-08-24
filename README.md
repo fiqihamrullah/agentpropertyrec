@@ -75,24 +75,59 @@ graph LR
 
 ### 🚀 Database Seeding & Execution
 
-#### 1. Menjalankan Seeder via Terminal
-Untuk mengisi database secara otomatis menggunakan skrip NPM, jalankan perintah berikut di terminal:
+#### 🖥️ Run Seeder via Terminal
+To automatically populate the database using an NPM script, run the following command in the terminal:
+ 
 
 ```bash
 npm run seed
 ```
-##### 🖥️ Eksekusi Manual via CognoDB Console / Browser
+##### 🖥️ Manual Execution via the CognoDB Console / Browser
 
-Jika Anda ingin menjalankan Cypher query secara manual langsung di console CognoDB/Browser, silakan gunakan file-file pada folder `cypher/`:
+If you want to run the Cypher queries manually directly in the CognoDB/Browser console, please use the files in the following folder `cypher/`:
 
 * 📄 **`cypher/seed.cypher`**  
-  Menguraikan perintah untuk pembuatan *nodes*, *labels*, dan *relationships* awal.
+  Executes the commands for creating the initial nodes, labels, and relationships.
 * 📄 **`cypher/queries.cypher`**  
-  Menyediakan query utama untuk menguji pencarian rekomendasi agen dan properti.
+  Provides the main query for testing recommendations.
 
-> **Tips:** Pastikan Anda mengeksekusi `seed.cypher` terlebih dahulu agar struktur graph terbentuk sebelum menjalankan query di `queries.cypher`.
+> **Tips:** Make sure to execute `seed.cypher` first so that the graph structure is created before running the queries in `queries.cypher`.
 
-## 7. Main Queries Explained
+### Running the Backend
+
+Install Dependencies
+
+```bash
+npm install
+```
+
+Start the API Server
+
+```bash
+npm run server
+```
+
+### Running the Frontend
+
+Install Dependencies
+
+```bash
+npm install
+```
+
+Start the Dev Web
+
+```bash
+npm run dev
+```
+
+Build for Production
+
+```bash
+npm run build
+```
+
+## 7. Main Queries
 
 ```cypher
 // Find primary agents which an agent has previously collaborated with
