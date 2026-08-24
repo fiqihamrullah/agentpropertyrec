@@ -8,7 +8,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Network, Search, Users2, Home } from "lucide-react";
+import { Network, Search, Users2, Home, Loader2, AlertTriangle } from "lucide-react";
+import { fetchRecommendations } from "@/lib/api";
+import CollaboratorResults from "@/components/results/CollaboratorResults";
+import OwnerNetworkResults from "@/components/results/OwnerNetworkResults";
 
 const CO_LIST_AGENTS = ["Jill", "Leon", "Billy"];
 const OWNER_NAMES = ["David", "Eve"];
@@ -21,7 +24,7 @@ function RelTag({ children }) {
   );
 }
 
-function ResultPlaceholder({ hint }) {
+function IdlePlaceholder({ hint }) {
   return (
     <div className="flex min-h-[132px] flex-col items-center justify-center gap-2 rounded-sm border border-dashed border-ink-border bg-ink/60 px-4 py-8 text-center">
       <Network className="h-5 w-5 text-slate-dim" />
@@ -30,8 +33,52 @@ function ResultPlaceholder({ hint }) {
   );
 }
 
-function SearchPanel({ eyebrow, label, options, placeholder, relTag, hint, icon: Icon }) {
+function LoadingState() {
+  return (
+    <div className="flex min-h-[132px] flex-col items-center justify-center gap-2 rounded-sm border border-ink-border bg-ink/60 px-4 py-8 text-center">
+      <Loader2 className="h-5 w-5 animate-spin text-brass" />
+      <p className="font-mono text-xs text-slate-dim">Querying graph…</p>
+    </div>
+  );
+}
+
+function ErrorState({ message }) {
+  return (
+    <div className="flex min-h-[132px] flex-col items-center justify-center gap-2 rounded-sm border border-red-900/50 bg-red-950/20 px-4 py-8 text-center">
+      <AlertTriangle className="h-5 w-5 text-red-400" />
+      <p className="font-mono text-xs text-red-300">{message}</p>
+    </div>
+  );
+}
+
+function SearchPanel({
+  eyebrow,
+  label,
+  options,
+  placeholder,
+  relTag,
+  hint,
+  icon: Icon,
+  mode, // "agent" | "owner"
+}) {
   const [value, setValue] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [result, setResult] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleFind() {
+    if (!value) return;
+    setStatus("loading");
+    setErrorMessage("");
+    try {
+      const data = await fetchRecommendations({ [mode]: value });
+      setResult(data);
+      setStatus("success");
+    } catch (err) {
+      setErrorMessage(err.message || "Terjadi kesalahan.");
+      setStatus("error");
+    }
+  }
 
   return (
     <Card className="flex h-full flex-col">
@@ -64,14 +111,33 @@ function SearchPanel({ eyebrow, label, options, placeholder, relTag, hint, icon:
             </SelectContent>
           </Select>
 
-          <Button className="gap-2 sm:w-32">
-            <Search className="h-4 w-4" />
+          <Button
+            className="gap-2 sm:w-32"
+            disabled={!value || status === "loading"}
+            onClick={handleFind}
+          >
+            {status === "loading" ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Search className="h-4 w-4" />
+            )}
             Find
           </Button>
         </div>
 
-        {/* Row 2: results placeholder */}
-        <ResultPlaceholder hint={hint} />
+        {/* Row 2: results */}
+        {status === "idle" && <IdlePlaceholder hint={hint} />}
+        {status === "loading" && <LoadingState />}
+        {status === "error" && <ErrorState message={errorMessage} />}
+        {status === "success" && mode === "agent" && (
+          <CollaboratorResults
+            agent={result.agent}
+            collaborators={result.collaborators}
+          />
+        )}
+        {status === "success" && mode === "owner" && (
+          <OwnerNetworkResults owner={result.owner} network={result.network} />
+        )}
       </CardContent>
     </Card>
   );
@@ -114,6 +180,7 @@ export default function App() {
 
           <div className="md:pr-8">
             <SearchPanel
+              mode="agent"
               eyebrow="Collaboration lookup"
               relTag="CO_LIST_WITH"
               label="Find primary agents which an agent has previously collaborated with"
@@ -126,8 +193,9 @@ export default function App() {
 
           <div className="md:pl-8">
             <SearchPanel
+              mode="owner"
               eyebrow="Recommendation lookup"
-              relTag="OWN → SALES"
+              relTag="OWN → SELL"
               label="Find recommended agents and their network based on a search for owner names whose properties have been sold"
               options={OWNER_NAMES}
               placeholder="Select an owner"
