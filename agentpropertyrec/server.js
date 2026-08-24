@@ -1,4 +1,4 @@
-import { app } from "./app.js";
+import  app from "./app.js";
 import { driver } from "./src/config/db.js";
 
 const PORT = process.env.PORT || 4000;
