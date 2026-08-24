@@ -1,4 +1,4 @@
-import { driver } from '../config/db';
+import { driver } from '../config/db.js';
 
 async function seed() {
     const session = driver.session();

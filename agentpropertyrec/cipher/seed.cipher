@@ -49,7 +49,7 @@ CREATE
     (p2)-[:CO_LIST_WITH]->(billy), 
     (p1)-[:CO_LIST_WITH]->(billy),
     (p2)-[:CO_LIST_WITH]->(jill),
-    (p3)-[:CO_LIST_WITH]->(jill);
+    (p3)-[:CO_LIST_WITH]->(jill),
 
     (david)-[:OWN]->(p1),
     (eve)-[:OWN]->(p2),
