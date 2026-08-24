@@ -1,10 +1,4 @@
-require('dotenv').config();
-const neo4j = require('neo4j-driver');
-
-const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
-);
+const { driver } = require('../config/db');
 
 async function seed() {
     const session = driver.session();
@@ -14,7 +8,7 @@ async function seed() {
             // Agents
                     CREATE
                         (a1:Agent {
-                            name: 'JIll',
+                            name: 'Jill',
                             sex: 'Female',
                             phone_number: '081234567001'
                         }),
@@ -57,7 +51,7 @@ async function seed() {
         `);
 
         await session.run(`
-            //RELATIONSHIPS 
+            // RELATIONSHIPS 
             MATCH
                 (jill:Agent {name: 'Jill'}),
                 (leon:Agent {name: 'Leon'}),
@@ -69,20 +63,19 @@ async function seed() {
                 (eve:PropertyOwner {name: 'Eve'})
 
             CREATE
-                (jill)-[:SALES]->(p1),
-                (leon)-[:SALES]->(p2),
-                (billy)-[:SALES]->(p3),
+                (jill)-[:SELL]->(p1),
+                (leon)-[:SELL]->(p2),
+                (billy)-[:SELL]->(p3),
 
                 (p1)-[:CO_LIST_WITH]->(leon),
-                (p2)-[:CO_LIST_WITH]->(billy),
-                (p1)-[:CO_LIST_WITH]->(leon),
+                (p2)-[:CO_LIST_WITH]->(billy),                
                 (p1)-[:CO_LIST_WITH]->(billy),
                 (p2)-[:CO_LIST_WITH]->(jill),
                 (p3)-[:CO_LIST_WITH]->(jill),
 
                 (david)-[:OWN]->(p1),
                 (eve)-[:OWN]->(p2),
-                (eve)-[:OWN]->(p3);
+                (eve)-[:OWN]->(p3)
         `);
       
         console.log("Database successfully seeded!");
