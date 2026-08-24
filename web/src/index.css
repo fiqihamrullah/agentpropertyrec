@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  border-color: theme("colors.ink.border");
+}
+
+body {
+  font-family: theme("fontFamily.body");
+}
+
+::selection {
+  background-color: theme("colors.brass.DEFAULT");
+  color: theme("colors.ink.DEFAULT");
+}
+
+/* subtle node-line network texture used behind the hero */
+.graph-texture {
+  background-image:
+    radial-gradient(circle at 12% 30%, rgba(200, 155, 92, 0.35) 0px, rgba(200, 155, 92, 0.35) 2px, transparent 2px),
+    radial-gradient(circle at 34% 70%, rgba(79, 166, 156, 0.3) 0px, rgba(79, 166, 156, 0.3) 2px, transparent 2px),
+    radial-gradient(circle at 62% 22%, rgba(200, 155, 92, 0.3) 0px, rgba(200, 155, 92, 0.3) 2px, transparent 2px),
+    radial-gradient(circle at 82% 58%, rgba(79, 166, 156, 0.28) 0px, rgba(79, 166, 156, 0.28) 2px, transparent 2px),
+    radial-gradient(circle at 95% 15%, rgba(200, 155, 92, 0.25) 0px, rgba(200, 155, 92, 0.25) 2px, transparent 2px),
+    linear-gradient(105deg, transparent 0%, transparent 100%);
+  background-size: 100% 100%;
+}
