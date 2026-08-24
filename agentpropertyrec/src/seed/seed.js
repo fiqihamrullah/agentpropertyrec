@@ -1,4 +1,4 @@
-const { driver } = require('../config/db');
+import { driver } from '../config/db';
 
 async function seed() {
     const session = driver.session();
